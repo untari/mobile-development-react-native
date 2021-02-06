@@ -3,7 +3,9 @@ import Menu from './MenuComponent';
 import Home from './HomeComponent';
 import Dishdetail from './DishdetailComponent';
 import { View, Platform } from 'react-native';
-import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const MenuNavigator = createStackNavigator({
     Menu: { screen: Menu }, 
@@ -57,9 +59,10 @@ const MainNavigator = createDrawerNavigator({
 class Main extends Component {
   render() {
     return (
-        <View style={{flex:1, paddingTop: Platform.OS === 'ios' ? 0 : Expo.Constants.statusBarHeight }}>
-            <MainNavigator />
-        </View>
+        
+            <Stack.Navigator>
+                <MainNavigator />
+            </Stack.Navigator>
     );
   }
 }
