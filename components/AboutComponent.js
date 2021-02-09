@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { ScrollView, Text, FlatList } from 'react-native';
 import { Card, ListItem } from 'react-native-elements';
 import { LEADERS } from '../shared/leaders';
+import { connect } from 'react-redux';
+import { baseUrl } from '../shared/baseUrl';
+
+const mapStateToProps = state => {
+    return {
+        leaders: state.leaders;
+    }
+}
 
 
  class About extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            leaders: LEADERS
-        };
-    }
 
     static navigationOptions = {
         title: 'About Us'
@@ -22,12 +23,13 @@ import { LEADERS } from '../shared/leaders';
         const renderLeaders = ({item, index}) => {
             return (
                     <ListItem
+                        roundAvatar
                         key={index}
                         title={item.name}
-                        titleStyle = {{color: 'black'}}
                         subtitle={item.description}
+                        subtitleNumberOfLines={15}
                         hideChevron={true}
-                        leftAvatar={{ source: require('./images/alberto.png')}}
+                        leftAvatar={{ source: { uri: baseUrl + item.image }}}
                     />
             );
         };
@@ -46,7 +48,7 @@ import { LEADERS } from '../shared/leaders';
                 </Card>
                 <Card title='Corporate Leadership'>
                     <FlatList 
-                        data={this.state.leaders}
+                        data={this.props.leaders.leaders}
                         renderItem={renderLeaders}
                         keyExtractor={item => item.id.toString()}
                         />
@@ -56,4 +58,4 @@ import { LEADERS } from '../shared/leaders';
     }
 }
 
- export default About;
+ export default connect(mapStateToProps)(About);
