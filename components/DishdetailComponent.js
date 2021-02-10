@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    postFavorite: (dishId) => dispatch(postFavorite(dishId));
+    postFavorite: (dishId) => dispatch(postFavorite(dishId))
 });
 
 function RenderDish(props) {
