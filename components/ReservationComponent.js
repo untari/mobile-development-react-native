@@ -6,21 +6,26 @@ import DatePicker from 'react-native-datepicker';
 class Reservation extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            guests: 1,
-            smoking: false,
-            date: '',
-            showModal: false
-        }
+        this.state = this.defaultState();
     }
     static navigationOptions = {
         title: 'Reserve Table'
     }
     
+    defaultState() {
+        return({
+            gueast: 1,
+            smoking: false,
+            date: '',
+            showModal: false
+        })
+    }
+    
     toggleModal() {
         this.setState({showModal: !this.state.showModal});
     }
-
+  
+  
     handleReservation() {
         console.log(JSON.stringify(this.state));
         this.toggleModal();
@@ -107,8 +112,8 @@ class Reservation extends Component {
                 
                 <Modal animationType = {"slide"} transparent = {false}
                     visible = {this.state.showModal}
-                    onDismiss = {() => this.toggleModal() }
-                    onRequestClose = {() => this.toggleModal() }>
+                    onDismiss = {() => this.resetModal() }
+                    onRequestClose = {() => this.resetModal() }>
                     <View style = {styles.modal}>
                         <Text style = {styles.modalTitle}>Your Reservation</Text>
                         <Text style = {styles.modalText}>Number of Guests: {this.state.guests}</Text>
@@ -116,7 +121,7 @@ class Reservation extends Component {
                         <Text style = {styles.modalText}>Date and Time: {this.state.date}</Text>
                         
                         <Button 
-                            onPress = {() =>{this.toggleModal(); this.resetForm();}}
+                            onPress = {() =>{this.resetForm()}}
                             color="#512DA8"
                             title="Close" 
                             />

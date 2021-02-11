@@ -27,6 +27,26 @@ export const commentsFailed = (errmess) => ({
     payload: comments
 });
 
+export const addComment = (comment) => ({
+    type: ActionTypes.ADD_COMMENTS,
+    payload: comments
+});
+
+export const postComment = (dishId, rating, author, comment) =>
+(dispatch) => {
+    const newComment = {
+        author: author,
+        comment: comment,
+        dishId: dishId,
+        rating: rating
+    };
+    newComment.date = new Date().toISOString();
+    
+    setTimeout(() => {
+        dispatch(addCOmment(newCOmment));
+    }, 2000);
+};
+
 export const fetchDishes = () => (dispatch) => {
     dispatch(dishesLoading());
     return fetch(baseUrl + 'dishes')
