@@ -2,57 +2,93 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
+import { Permission, Notification } from 'expo';
 import * as Animatable from 'react-native-animatable';
 
 class Reservation extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+                guest: 1,
+                smoking: false,
+                date: ''
+        }
+    }
     static navigationOptions = {
-        guest: 1,
-        smoking: false,
-        date: '',
-    }
-    this.state = Reservation.defaultState();
-    
-    resetForm() {
-        this.setState(Reservation.defaultState());
-    }
-    
-    confirmReservation() {
-        this.resetForm();
+        title: 'Reserve Table'
     }
     
     handleReservation() {
-        const { date, guest, smoking } = this.state;
+       console.log(JSON.stringfy(this.state));
+       let message = 'Number of Guests: ' + this.state.guests +
+                                '\nSmoking? ' + ( this.state.smoking ? 'YES' : 'NO' ) + 
+                                '\nDate and Time: ' + this.state.date
         
         Alert.alert(
             ' Your Reservation OK?',
-            `Number of guests: ${guests}\nSmoking? ${smoking ? 'Yes' : 'No'}\nDate and Time:${date}`,
+            message,
             [
                 {
                     text: 'Cancel',
-                    style: 'cancel',
-                    onPress: () => this.resetForm();
+                    onPress: () => {
+                        console.log('Reservation Cancelled');
+                        this.resetForm();
+                    }, style: 'cancel'
                 },
-                {
+                { 
                     text: 'OK',
-                    onPress: () => this.confirmReservation(),
-                },
+                    onPress: () => {
+                        this.presentLocalNotification(this.state.date);
+                        this.resetForm();
+                    }
+                }
             ],
-            { canceable: false },
+            { canceable: false }
         );
     }
     
+    resetForm() {
+        this.setState({
+            guests: 1,
+            smoking: false,
+            date: ''
+        });
+    }
+     asyn obtainNotificationPermission() {
+         let permission = await Permission.getAsync(Permission.USER_FACING_NOTIFICATIONS)
+         if ( permission.status !== 'granted') {
+             permission = await Permission.askAsync(Permission.USER_FACING_NOTIFICATIONS);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission mnot granted to show notifications');
+            }
+        }
+        return permission;
+    }
+    
+    async presentLocalNotification(date) {
+        await this.obtainNotificationPermission();
+        Notifications.presentLocalNotification({
+            title: 'Your Reservation',
+            body: 'Reservation for ' + date + 'requested',
+            ios: {
+                sound: true
+            },
+            android; {
+                sound: true,
+                vibrate: true,
+                color: '#512DA8'
+            }
+        });
+    }
     
     render() {
-        const todayDate = new Date().toISOString().split('T')[0];
-        const { date, guests, smoking } = this.state;
         return(
             <Animatable.View animation="zoomIn" duration={2000}>
-                    <ScrollView>
                         <View style={styles.formRow}>
                         <Text style={styles.formLabel}>Number of Guests</Text>
                         <Picker
                             style={styles.formItem}
-                            selectedValue={ guests }
+                            selectedValue={ this.state.guests }
                             onValueChange={(itemValue => this.setState({guests: itemValue})}>
                             <Picker.Item label="1" value="1" />
                             <Picker.Item label="2" value="2" />
@@ -66,7 +102,7 @@ class Reservation extends Component {
                         <Text style={styles.formLabel}>Smoking/Non-Smoking?</Text>
                         <Switch
                             style={styles.formItem}
-                            value={ smoking }
+                            value={ this.state.smoking }
                             onTintColor='#512DA8'
                             onValueChange={(value) => this.setState({smoking: value})}>
                         </Switch>
