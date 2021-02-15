@@ -1,5 +1,5 @@
 import React, { Component }  from 'react';
-import { Text, View, ScollView, FlatList, StyleSheet, Modal, Button, Alert, PanResponder } from 'react-native';
+import { Text, View, ScollView, FlatList, StyleSheet, Modal, Button, Alert, PanResponder, Share } from 'react-native';
 import { Card, Icon, Rating, Input } from  'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -74,6 +74,16 @@ function RenderDish(props){
         return true;
     });
     
+    const shareDish = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: title + ': ' + message + ' ' + url,
+            url: url
+        }, { 
+            dialogTitle: 'Share ' + title
+        });
+    }
+    
     if (dish != null) {
         return(
             <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
@@ -94,13 +104,22 @@ function RenderDish(props){
                                 color='f50'
                                 onPress={() => favorite ? console.log('Already favorite') : markFavorite()} 
                             />
-                            < Icon 
+                            <Icon 
                                 raised
                                 reverse
                                 name='pencil'
                                 type='font-awesome'
                                 color='#512DA8'
-                                onPress={() => openCOmmentForm()} />
+                                onPress={() => openCommentForm()} />
+                            <Icon 
+                                raised
+                                reverse
+                                name={'share'}
+                                type='font-awesome'
+                                color='#512DA8'
+                                style={style.cardItem}
+                                onPress={() => shareDish(dish.name, dish.description, baseUrl + dish.image)} 
+                            />
                         </View>
                 </Card>
             </Animatable.View>
