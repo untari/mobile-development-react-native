@@ -123,7 +123,7 @@ const AboutNavigator = createStackNavigator({
         iconStyle={{ color: 'white' }} 
         onPress={ () => navigation.navigate('DrawerToggle') } />    
     })
-  })
+  });
 
 
   
@@ -142,7 +142,7 @@ const AboutNavigator = createStackNavigator({
         iconStyle={{ color: 'white' }} 
         onPress={ () => navigation.toggleDrawer()} />    
     })
-  })
+  });
 
 
  const LoginNavigator = createStackNavigator({
@@ -155,12 +155,13 @@ const AboutNavigator = createStackNavigator({
       headerTitleStyle: {
           color: "#fff"            
       },
+      title: 'Login',
       headerTintColor: "#fff",
       headerLeft: <Icon name="menu" size={24}
         iconStyle={{ color: 'white' }} 
         onPress={ () => navigation.toggleDrawer()} />    
     })
-  })  
+  })  ;
 
 const CustomDrawerContentComponent = (props) => (
     <ScrollView>
