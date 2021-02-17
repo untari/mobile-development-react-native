@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-import { Permission, Notification } from 'expo';
+import { Permission, Notification, Calendar } from 'expo';
 import * as Animatable from 'react-native-animatable';
 
 class Reservation extends Component {
@@ -63,6 +63,33 @@ class Reservation extends Component {
             }
         }
         return permission;
+    }
+    
+    async obtainCalendarPermission() {
+        let permission = await Permissions.getAsync(Permissions.CALENDAR);
+        if (permission.status !== 'granted') {
+            permission = await Permissions.askAsync(Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to calendar');
+            }
+        }
+        return permission;
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        let startDate = new Date(Date.parse(data));
+        let endDate = new Date(Date.parse(date) + 2 * 60 * 60 * 1000);
+
+        Calendar.createEventAsync(Calendar.DEFAULT, {
+            title: 'Con Fusion Table Reservation',
+            startDate: startDate,
+            endDate: endDate,
+            timeZone: 'Asia/Hong_Kong',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+        },
+      );
+      Alert.alert('Reservation has been added to your calender');
     }
     
     async presentLocalNotification(date) {
@@ -129,7 +156,7 @@ class Reservation extends Component {
                                 marginLeft: 36
                             }
                             }}
-                            onDateChange={(newDate) => {this.setState({date: newDate})}}
+                            onDateChange={(date) => {this.setState({date: date})}}
                         />
                         </View>
                         
